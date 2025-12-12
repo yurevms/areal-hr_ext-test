@@ -4,12 +4,16 @@
     import { DatabaseModule } from './database/database.module';
     import {ConfigModule} from "@nestjs/config";
     import { OrganizationsModule } from './organizations/organizations.module';
+import { DepartmentsModule } from './departments/departments.module';
+import { PositionsModule } from './positions/positions.module';
 
     @Module({
       imports: [
           ConfigModule.forRoot({ isGlobal: true }),
           DatabaseModule,
-          OrganizationsModule
+          OrganizationsModule,
+          DepartmentsModule,
+          PositionsModule
       ],
       controllers: [
           AppController
