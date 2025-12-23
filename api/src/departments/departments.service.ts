@@ -12,14 +12,14 @@ export class DepartmentsService {
 
     async findAll(): Promise<Department[]> {
         const result = await this.db.query<Department>(
-            'SELECT * FROM departments WHERE deleted_at IS NULL',
+            `SELECT * FROM departments WHERE deleted_at IS NULL`,
         );
         return result;
     }
 
     async findOne(id: number): Promise<Department | null> {
         const result = await this.db.query<Department>(
-            'SELECT * FROM departments WHERE id=$1 AND deleted_at IS NULL',
+            `SELECT * FROM departments WHERE id=$1 AND deleted_at IS NULL`,
             [id],
         );
         return result[0] || null;
@@ -65,7 +65,7 @@ export class DepartmentsService {
 
         fields.push(`updated_at = NOW()`);
 
-        const sql = `UPDATE departments SET ${fields.join(', ')} WHERE id = $${idx} RETURNING *`;
+        const sql = `UPDATE departments SET ${fields.join(', ')} WHERE id = $${idx} AND deleted_at IS NULL RETURNING *`;
         values.push(id);
 
         const result = await this.db.query<Department>(sql, values);
@@ -74,7 +74,7 @@ export class DepartmentsService {
 
     async remove(id: number): Promise<Department | null> {
         const result = await this.db.query<Department>(
-            'UPDATE departments SET deleted_at=NOW() WHERE id=$1 RETURNING *',
+            `UPDATE departments SET deleted_at=NOW() WHERE id=$1 AND deleted_at IS NULL RETURNING *`,
             [id],
         );
         return result[0] || null;

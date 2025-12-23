@@ -10,14 +10,14 @@ export class PositionsService {
 
     async findAll(): Promise<Position[]> {
         const result = await this.db.query<Position>(
-            'SELECT * FROM positions WHERE deleted_at IS NULL',
+            `SELECT * FROM positions WHERE deleted_at IS NULL`,
         );
         return result;
     }
 
     async findOne(id: number): Promise<Position | null> {
         const result = await this.db.query<Position>(
-            'SELECT * FROM positions WHERE id=$1 AND deleted_at IS NULL',
+            `SELECT * FROM positions WHERE id=$1 AND deleted_at IS NULL`,
             [id],
         );
         return result[0] || null;
@@ -47,13 +47,7 @@ export class PositionsService {
 
         fields.push('updated_at = NOW()');
 
-        const sql = `
-            UPDATE positions
-            SET ${fields.join(', ')}
-            WHERE id = $${idx}
-              AND deleted_at IS NULL
-            RETURNING *
-        `;
+        const sql = `UPDATE positions SET ${fields.join(', ')} WHERE id = $${idx} AND deleted_at IS NULL RETURNING *`;
 
         values.push(id);
         const result = await this.db.query<Position>(sql, values);
@@ -62,7 +56,7 @@ export class PositionsService {
 
     async remove(id: number): Promise<Position | null> {
         const result = await this.db.query<Position>(
-            'UPDATE positions SET deleted_at=NOW() WHERE id=$1 RETURNING *',
+            `UPDATE positions SET deleted_at=NOW() WHERE id=$1 AND deleted_at IS NULL RETURNING *`,
             [id],
         );
         return result[0] || null;
