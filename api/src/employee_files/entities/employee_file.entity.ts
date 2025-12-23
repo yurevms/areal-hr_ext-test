@@ -1,5 +1,5 @@
 export type EmployeeFileType = 'passport_scan' | 'contract' | 'other';
-export class EmployeeFile {
+export interface EmployeeFile {
     id: number;
     employee_id: number;
     file_id: number;

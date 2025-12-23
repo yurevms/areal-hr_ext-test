@@ -1,4 +1,4 @@
-export class File {
+export interface File {
     id: number;
     original_name: string;
     storage_name: string;

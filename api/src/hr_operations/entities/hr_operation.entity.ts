@@ -1,4 +1,4 @@
-export class HrOperation {
+export interface HrOperation {
     id: number;
     employee_id: number;
     department_id?: number | null;

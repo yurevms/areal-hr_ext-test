@@ -10,6 +10,7 @@ import { EmployeesModule } from './employees/employees.module';
 import { FilesModule } from './files/files.module';
 import { EmployeeFilesModule } from './employee_files/employee_files.module';
 import { HrOperationsModule } from './hr_operations/hr_operations.module';
+import { HistoryModule } from './history/history.module';
 
     @Module({
       imports: [
@@ -21,7 +22,8 @@ import { HrOperationsModule } from './hr_operations/hr_operations.module';
           EmployeesModule,
           FilesModule,
           EmployeeFilesModule,
-          HrOperationsModule
+          HrOperationsModule,
+          HistoryModule
       ],
       controllers: [
           AppController
