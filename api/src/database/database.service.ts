@@ -1,9 +1,9 @@
-import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
+import { Injectable, OnModuleDestroy } from '@nestjs/common';
 import { Pool } from 'pg';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class DatabaseService implements OnModuleInit, OnModuleDestroy {
+export class DatabaseService implements OnModuleDestroy {
     private pool: Pool;
 
     constructor(private configService: ConfigService) {
@@ -14,12 +14,6 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
             password: this.configService.get<string>('DB_PASSWORD', 'postgres'),
             database: this.configService.get<string>('DB_NAME', 'areal_hr'),
         });
-    }
-
-    async onModuleInit() {
-        console.log('Connecting to PostgreSQL...');
-        await this.pool.connect();
-        console.log('PostgreSQL connected');
     }
 
     async onModuleDestroy() {
