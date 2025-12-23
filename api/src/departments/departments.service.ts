@@ -3,6 +3,8 @@ import { DatabaseService } from '../database/database.service';
 import { CreateDepartmentDto } from './dto/create-department.dto';
 import { UpdateDepartmentDto } from './dto/update-department.dto';
 import { Department } from './entities/department.entity';
+import {UpdateOrganizationDto} from "../organizations/dto/update-organization.dto";
+import {Organization} from "../organizations/entities/organization.entity";
 
 @Injectable()
 export class DepartmentsService {
@@ -32,12 +34,41 @@ export class DepartmentsService {
         return result[0];
     }
 
-    async update(id: number, dto: UpdateDepartmentDto): Promise<Department | null> {
-        const result = await this.db.query<Department>(
-            `UPDATE departments SET organization_id=$1, parent_id=$2, name=$3, comment=$4, updated_at=NOW()
-       WHERE id=$5 RETURNING *`,
-            [dto.organization_id, dto.parent_id || null, dto.name, dto.comment, id],
-        );
+    async update(id: number, dto: UpdateDepartmentDto,): Promise<Department | null> {
+        const fields: string[] = [];
+        const values: any[] = [];
+        let idx = 1;
+
+        if (dto.organization_id !== undefined) {
+            fields.push(`organization_id = $${idx++}`);
+            values.push(dto.organization_id);
+        }
+
+        if (dto.parent_id !== undefined) {
+            fields.push(`parent_id = $${idx++}`);
+            values.push(dto.parent_id);
+        }
+
+        if (dto.name !== undefined) {
+            fields.push(`name = $${idx++}`);
+            values.push(dto.name);
+        }
+
+        if (dto.comment !== undefined) {
+            fields.push(`comment = $${idx++}`);
+            values.push(dto.comment);
+        }
+
+        if (fields.length === 0) {
+            return this.findOne(id);
+        }
+
+        fields.push(`updated_at = NOW()`);
+
+        const sql = `UPDATE departments SET ${fields.join(', ')} WHERE id = $${idx} RETURNING *`;
+        values.push(id);
+
+        const result = await this.db.query<Department>(sql, values);
         return result[0] || null;
     }
 

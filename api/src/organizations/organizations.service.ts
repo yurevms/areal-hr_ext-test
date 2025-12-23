@@ -32,13 +32,34 @@ export class OrganizationsService {
         return result.rows[0];
     }
 
-    async update(id: number, dto: UpdateOrganizationDto): Promise<Organization | null> {
-        const result: QueryResult<Organization> = await this.db.query(
-            'UPDATE organizations SET name=$1, comment=$2, updated_at=NOW() WHERE id=$3 RETURNING *',
-            [dto.name, dto.comment, id],
-        );
-        return result.rows[0] || null;
+    async update(id: number, dto: UpdateOrganizationDto,): Promise<Organization | null> {
+        const fields: string[] = [];
+        const values: any[] = [];
+        let idx = 1;
+
+        if (dto.name !== undefined) {
+            fields.push(`name = $${idx++}`);
+            values.push(dto.name);
+        }
+
+        if (dto.comment !== undefined) {
+            fields.push(`comment = $${idx++}`);
+            values.push(dto.comment);
+        }
+
+        if (fields.length === 0) {
+            return this.findOne(id);
+        }
+
+        fields.push(`updated_at = NOW()`);
+
+        const sql = `UPDATE organizations SET ${fields.join(', ')} WHERE id = $${idx} RETURNING *`;
+
+        values.push(id);
+        const result = await this.db.query<Organization>(sql, values);
+        return result[0] || null;
     }
+
 
     async remove(id: number): Promise<Organization | null> {
         const result: QueryResult<Organization> = await this.db.query(

@@ -32,10 +32,31 @@ export class PositionsService {
     }
 
     async update(id: number, dto: UpdatePositionDto): Promise<Position | null> {
-        const result = await this.db.query<Position>(
-            `UPDATE positions SET name=$1, updated_at=NOW() WHERE id=$2 RETURNING *`,
-            [dto.name, id],
-        );
+        const fields: string[] = [];
+        const values: any[] = [];
+        let idx = 1;
+
+        if (dto.name !== undefined) {
+            fields.push(`name = $${idx++}`);
+            values.push(dto.name);
+        }
+
+        if (fields.length === 0) {
+            return this.findOne(id);
+        }
+
+        fields.push('updated_at = NOW()');
+
+        const sql = `
+            UPDATE positions
+            SET ${fields.join(', ')}
+            WHERE id = $${idx}
+              AND deleted_at IS NULL
+            RETURNING *
+        `;
+
+        values.push(id);
+        const result = await this.db.query<Position>(sql, values);
         return result[0] || null;
     }
 
