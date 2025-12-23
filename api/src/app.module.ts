@@ -6,6 +6,7 @@
     import { OrganizationsModule } from './organizations/organizations.module';
 import { DepartmentsModule } from './departments/departments.module';
 import { PositionsModule } from './positions/positions.module';
+import { EmployeesModule } from './employees/employees.module';
 
     @Module({
       imports: [
@@ -13,7 +14,8 @@ import { PositionsModule } from './positions/positions.module';
           DatabaseModule,
           OrganizationsModule,
           DepartmentsModule,
-          PositionsModule
+          PositionsModule,
+          EmployeesModule
       ],
       controllers: [
           AppController
