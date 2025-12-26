@@ -11,6 +11,7 @@ import { FilesModule } from './files/files.module';
 import { EmployeeFilesModule } from './employee_files/employee_files.module';
 import { HrOperationsModule } from './hr_operations/hr_operations.module';
 import { HistoryModule } from './history/history.module';
+import { UsersModule } from './users/users.module';
 
     @Module({
       imports: [
@@ -23,7 +24,8 @@ import { HistoryModule } from './history/history.module';
           FilesModule,
           EmployeeFilesModule,
           HrOperationsModule,
-          HistoryModule
+          HistoryModule,
+          UsersModule
       ],
       controllers: [
           AppController
