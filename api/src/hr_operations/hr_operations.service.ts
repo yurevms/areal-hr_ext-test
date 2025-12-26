@@ -3,12 +3,16 @@ import { DatabaseService } from '../database/database.service';
 import { CreateHrOperationDto } from './dto/create-hr_operation.dto';
 import { UpdateHrOperationDto } from './dto/update-hr_operation.dto';
 import { HrOperation } from './entities/hr_operation.entity';
+import { createHrOperationSchema, updateHrOperationSchema } from './schemas/hr-operation.schema';
 
 @Injectable()
 export class HrOperationsService {
     constructor(private readonly db: DatabaseService) {}
 
     async create(dto: CreateHrOperationDto): Promise<HrOperation> {
+        const { error, value } = createHrOperationSchema.validate(dto, { abortEarly: false });
+        if (error) throw new Error(`Validation failed: ${error.message}`);
+
         const sql = `
             INSERT INTO hr_operations (
                 employee_id,
@@ -50,6 +54,9 @@ export class HrOperationsService {
     }
 
     async update(id: number, dto: UpdateHrOperationDto): Promise<HrOperation | null> {
+        const { error, value } = updateHrOperationSchema.validate(dto, { abortEarly: false });
+        if (error) throw new Error(`Validation failed: ${error.message}`);
+
         const fields: string[] = [];
         const values: any[] = [];
         let idx = 1;

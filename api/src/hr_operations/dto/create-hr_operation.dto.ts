@@ -1,8 +1,8 @@
 export class CreateHrOperationDto {
     employee_id: number;
-    department_id?: number;
-    position_id?: number;
-    salary_amount?: number;
+    department_id?: number | null;
+    position_id?: number | null;
+    salary_amount?: number | null;
     operation_type: string;
     user_id: number;
     performed_at: string;
