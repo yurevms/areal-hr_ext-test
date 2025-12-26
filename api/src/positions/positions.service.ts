@@ -3,6 +3,7 @@ import { DatabaseService } from '../database/database.service';
 import { CreatePositionDto } from './dto/create-position.dto';
 import { UpdatePositionDto } from './dto/update-position.dto';
 import { Position } from './entities/position.entity';
+import { createPositionSchema, updatePositionSchema } from './schemas/position.schema';
 
 @Injectable()
 export class PositionsService {
@@ -24,6 +25,9 @@ export class PositionsService {
     }
 
     async create(dto: CreatePositionDto): Promise<Position> {
+        const { error, value } = createPositionSchema.validate(dto, { abortEarly: false });
+        if (error) throw new Error(`Validation failed: ${error.message}`);
+
         const result = await this.db.query<Position>(
             `INSERT INTO positions (name, created_at) VALUES ($1, NOW()) RETURNING *`,
             [dto.name],
@@ -32,6 +36,9 @@ export class PositionsService {
     }
 
     async update(id: number, dto: UpdatePositionDto): Promise<Position | null> {
+        const { error, value } = updatePositionSchema.validate(dto, { abortEarly: false });
+        if (error) throw new Error(`Validation failed: ${error.message}`);
+
         const fields: string[] = [];
         const values: any[] = [];
         let idx = 1;
