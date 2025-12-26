@@ -3,8 +3,8 @@ import { DatabaseService } from '../database/database.service';
 import { CreateDepartmentDto } from './dto/create-department.dto';
 import { UpdateDepartmentDto } from './dto/update-department.dto';
 import { Department } from './entities/department.entity';
-import {UpdateOrganizationDto} from "../organizations/dto/update-organization.dto";
-import {Organization} from "../organizations/entities/organization.entity";
+import { createDepartmentSchema, updateDepartmentSchema } from './schemas/departments.schema';
+import Joi from 'joi';
 
 @Injectable()
 export class DepartmentsService {
@@ -26,6 +26,10 @@ export class DepartmentsService {
     }
 
     async create(dto: CreateDepartmentDto): Promise<Department> {
+        //Валидация с помощью Joi
+        const { error, value } = createDepartmentSchema.validate(dto, { abortEarly: false });
+        if (error) throw new Error(`Validation failed: ${error.message}`);
+
         const result = await this.db.query<Department>(
             `INSERT INTO departments (organization_id, parent_id, name, comment, created_at)
        VALUES ($1, $2, $3, $4, NOW()) RETURNING *`,
@@ -35,6 +39,10 @@ export class DepartmentsService {
     }
 
     async update(id: number, dto: UpdateDepartmentDto,): Promise<Department | null> {
+        //валидация через Joi
+        const { error, value } = updateDepartmentSchema.validate(dto, { abortEarly: false });
+        if (error) throw new Error(`Validation failed: ${error.message}`);
+
         const fields: string[] = [];
         const values: any[] = [];
         let idx = 1;
