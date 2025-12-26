@@ -3,6 +3,8 @@ import { DatabaseService } from '../database/database.service';
 import { CreateEmployeeFileDto } from './dto/create-employee_file.dto';
 import { EmployeeFile } from './entities/employee_file.entity';
 import { UpdateEmployeeFileDto} from "./dto/update-employee_file.dto";
+import { createEmployeeFileSchema, updateEmployeeFileSchema } from './schemas/employee-files.schema';
+import Joi from 'joi';
 
 @Injectable()
 export class EmployeeFilesService {
@@ -26,6 +28,9 @@ export class EmployeeFilesService {
     }
 
     async create(dto: CreateEmployeeFileDto): Promise<EmployeeFile> {
+        const { error, value } = createEmployeeFileSchema.validate(dto, { abortEarly: false });
+        if (error) throw new Error(`Validation failed: ${error.message}`);
+
         const result = await this.db.query<EmployeeFile>(
             `
             INSERT INTO employee_files (
@@ -48,6 +53,9 @@ export class EmployeeFilesService {
     }
 
     async update(id: number, dto: UpdateEmployeeFileDto): Promise<EmployeeFile | null> {
+        const { error, value } = updateEmployeeFileSchema.validate(dto, { abortEarly: false });
+        if (error) throw new Error(`Validation failed: ${error.message}`);
+
         const fields: string[] = [];
         const values: any[] = [];
         let idx = 1;
