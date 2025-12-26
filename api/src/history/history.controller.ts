@@ -17,10 +17,11 @@ export class HistoryController {
   findAll() {
     return this.historyService.findAll();
   }
-    @Get('entity')
-    async findByEntity(@Query('type') type: string, @Query('id') id: string,): Promise<HistoryEntity[]> {
-        return this.historyService.findByEntity(type, Number(id));
-    }
+
+  @Get('entity')
+  async findByEntity(@Query('type') type: string, @Query('id') id: string,): Promise<HistoryEntity[]> {
+      return this.historyService.findByEntity(type, Number(id));
+  }
 
   @Get(':id')
   findOne(@Param('id') id: string) {

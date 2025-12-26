@@ -31,4 +31,9 @@ export class UsersController {
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
   }
+
+    @Get('by-login/:login')
+    findByLogin(@Param('login') login: string){
+      return this.usersService.findByLogin(login);
+    }
 }

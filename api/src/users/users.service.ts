@@ -4,12 +4,18 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import * as argon2 from 'argon2';
+import { createUserSchema, updateUserSchema } from './schemas/user.schema';
+import Joi from 'joi';
 
 @Injectable()
 export class UsersService {
     constructor(private readonly db: DatabaseService) {}
 
     async create(dto: CreateUserDto): Promise<User> {
+        //валидация через JOI
+        const { error, value } = createUserSchema.validate(dto, { abortEarly: false });
+        if (error) throw new Error(`Validation failed: ${error.message}`);
+
         const passwordHash = await argon2.hash(dto.password, {type: argon2.argon2id,});
 
         const sql = `
@@ -63,6 +69,10 @@ export class UsersService {
     }
 
     async update(id: number, dto: UpdateUserDto): Promise<User | null> {
+        //валидация через JOI
+        const { error, value } = updateUserSchema.validate(dto, { abortEarly: false });
+        if (error) throw new Error(`Validation failed: ${error.message}`);
+
         const fields: string[] = [];
         const values: any[] = [];
         let idx = 1;
@@ -132,4 +142,13 @@ export class UsersService {
         const result = await this.db.query<User>(sql, [id]);
         return result[0] || null;
     }
+
+    async findByLogin(login: string): Promise<User | null> {
+        const result = await this.db.query<User>(
+            `SELECT * FROM users WHERE login = $1 AND deleted_at IS NULL`,
+            [login],
+        );
+        return result[0] || null;
+    }
+
 }
