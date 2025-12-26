@@ -1,4 +1,8 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateHistoryDto } from './create-history.dto';
-
-export class UpdateHistoryDto extends PartialType(CreateHistoryDto) {}
+export class UpdateHistoryDto {
+    user_id?: number;
+    entity_type?: string;
+    entity_id?: number;
+    field_name?: string;
+    old_value?: string | null;
+    new_value?: string | null;
+}

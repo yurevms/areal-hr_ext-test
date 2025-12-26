@@ -3,12 +3,16 @@ import { DatabaseService } from '../database/database.service';
 import { CreateHistoryDto } from './dto/create-history.dto';
 import { UpdateHistoryDto } from './dto/update-history.dto';
 import { HistoryEntity } from './entities/history.entity';
+import { createHistorySchema, updateHistorySchema } from './schemas/history.schema';
 
 @Injectable()
 export class HistoryService {
     constructor(private readonly db: DatabaseService) {}
 
     async create(dto: CreateHistoryDto): Promise<HistoryEntity> {
+        const { error, value } = createHistorySchema.validate(dto, { abortEarly: false });
+        if (error) throw new Error(`Validation failed: ${error.message}`);
+
         const sql = `
             INSERT INTO history (
                 user_id,
@@ -67,10 +71,10 @@ export class HistoryService {
         );
     }
 
-    async update(
-        id: number,
-        dto: UpdateHistoryDto,
-    ): Promise<HistoryEntity | null> {
+    async update(id: number, dto: UpdateHistoryDto,): Promise<HistoryEntity | null> {
+        const { error, value } = updateHistorySchema.validate(dto, { abortEarly: false });
+        if (error) throw new Error(`Validation failed: ${error.message}`);
+
         const fields: string[] = [];
         const values: any[] = [];
         let idx = 1;
