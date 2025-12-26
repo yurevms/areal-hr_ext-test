@@ -3,12 +3,17 @@ import { DatabaseService } from '../database/database.service';
 import { CreateFileDto } from './dto/create-file.dto';
 import { File } from './entities/file.entity';
 import { UpdateFileDto} from "./dto/update-file.dto";
+import { createFileSchema, updateFileSchema } from './schemas/files.schema';
+import Joi from 'joi';
 
 @Injectable()
 export class FilesService {
     constructor(private readonly db: DatabaseService) {}
 
     async create(dto: CreateFileDto): Promise<File> {
+        const { error, value } = createFileSchema.validate(dto, { abortEarly: false });
+        if (error) throw new Error(`Validation failed: ${error.message}`);
+
         const sql = `
             INSERT INTO files (
                 original_name,
@@ -45,6 +50,9 @@ export class FilesService {
     }
 
     async update(id: number, dto: UpdateFileDto): Promise<File | null> {
+        const { error, value } = updateFileSchema.validate(dto, { abortEarly: false });
+        if (error) throw new Error(`Validation failed: ${error.message}`);
+
         const fields: string[] = [];
         const values: any[] = [];
         let idx = 1;
