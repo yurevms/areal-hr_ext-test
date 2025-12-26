@@ -3,6 +3,8 @@ import { DatabaseService } from '../database/database.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { Employee } from './entities/employee.entity';
+import { createEmployeeSchema, updateEmployeeSchema } from './schemas/employees.schema';
+import Joi from 'joi';
 
 @Injectable()
 export class EmployeesService {
@@ -23,6 +25,8 @@ export class EmployeesService {
     }
 
     async create(dto: CreateEmployeeDto): Promise<Employee> {
+        const { error, value } = createEmployeeSchema.validate(dto, { abortEarly: false });
+        if (error) throw new Error(`Validation failed: ${error.message}`);
 
         const sql = `
             INSERT INTO employees (
@@ -62,6 +66,9 @@ export class EmployeesService {
     }
 
     async update(id: number, dto: UpdateEmployeeDto): Promise<Employee | null> {
+        const { error, value } = updateEmployeeSchema.validate(dto, { abortEarly: false });
+        if (error) throw new Error(`Validation failed: ${error.message}`);
+
         const fields: string[] = [];
         const values: any[] = [];
         let idx = 1;
