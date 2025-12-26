@@ -3,6 +3,7 @@ import { DatabaseService } from '../database/database.service';
 import { CreateOrganizationDto } from './dto/create-organization.dto';
 import { UpdateOrganizationDto } from './dto/update-organization.dto';
 import { Organization } from './entities/organization.entity';
+import { createOrganizationSchema, updateOrganizationSchema } from './schemas/organization.schema';
 
 @Injectable()
 export class OrganizationsService {
@@ -29,6 +30,9 @@ export class OrganizationsService {
     }
 
     async create(dto: CreateOrganizationDto): Promise<Organization> {
+        const { error, value } = createOrganizationSchema.validate(dto, { abortEarly: false });
+        if (error) throw new Error(`Validation failed: ${error.message}`);
+
         const rows = await this.db.query<Organization>(
             `
                 INSERT INTO organizations (name, comment, created_at)
@@ -41,10 +45,10 @@ export class OrganizationsService {
         return rows[0];
     }
 
-    async update(
-        id: number,
-        dto: UpdateOrganizationDto,
-    ): Promise<Organization | null> {
+    async update(id: number, dto: UpdateOrganizationDto,): Promise<Organization | null> {
+        const { error, value } = updateOrganizationSchema.validate(dto, { abortEarly: false });
+        if (error) throw new Error(`Validation failed: ${error.message}`);
+
         const fields: string[] = [];
         const values: any[] = [];
         let idx = 1;
