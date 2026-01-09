@@ -12,6 +12,9 @@ import { EmployeeFilesModule } from './employee_files/employee_files.module';
 import { HrOperationsModule } from './hr_operations/hr_operations.module';
 import { HistoryModule } from './history/history.module';
 import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
+import { AuthService } from './auth/auth.service';
+import { AuthModule } from './auth/auth.module';
 
     @Module({
       imports: [
@@ -25,13 +28,15 @@ import { UsersModule } from './users/users.module';
           EmployeeFilesModule,
           HrOperationsModule,
           HistoryModule,
-          UsersModule
+          UsersModule,
+          AuthModule
       ],
       controllers: [
           AppController
       ],
       providers: [
-          AppService
+          AppService,
+          AuthService
       ],
     })
     export class AppModule {}
