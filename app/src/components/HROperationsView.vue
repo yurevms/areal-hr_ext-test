@@ -1,7 +1,7 @@
 <template>
   <div class="page">
     <h2>Users Page</h2>
-    <p>Список пользователей будет здесь</p>
+    <p>HR операции будут здесь</p>
   </div>
 </template>
 
