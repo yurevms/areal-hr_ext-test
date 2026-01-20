@@ -1,18 +1,19 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import { router } from './router'
+import {router} from './router'
 
-import { Quasar } from 'quasar'
+import { Quasar, Notify } from 'quasar'
 import '@quasar/extras/roboto-font/roboto-font.css'
 import '@quasar/extras/material-icons/material-icons.css'
+import 'quasar/dist/quasar.css' // <- обязательно подключаем стили Quasar
 import './assets/main.css'
-import 'quasar/dist/quasar.css'
 
 const app = createApp(App)
 
 app.use(router)
 app.use(Quasar, {
-  config: {}
+  config: {},
+  plugins: { Notify }
 })
 
 app.mount('#app')

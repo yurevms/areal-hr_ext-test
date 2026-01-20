@@ -14,5 +14,14 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  backend:
+    build: ./containers/api
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgres://admin:2635@postgres:5432/areal_hr
+    depends_on:
+      - postgres
+
 volumes:
   pgdata:

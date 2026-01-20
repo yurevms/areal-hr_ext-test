@@ -3,7 +3,7 @@ import Joi from 'joi';
 export const createEmployeeSchema = Joi.object({
     last_name: Joi.string().max(50).required(),
     first_name: Joi.string().max(50).required(),
-    patronymic: Joi.string().max(50).optional().allow(null),
+    patronymic: Joi.string().max(50).allow('', null).optional(),
 
     birth_date: Joi.date().iso().required(),
 
@@ -17,8 +17,9 @@ export const createEmployeeSchema = Joi.object({
     address_city: Joi.string().max(255).required(),
     address_street: Joi.string().max(255).required(),
     address_house: Joi.string().max(50).required(),
-    address_building: Joi.string().max(50).optional().allow(null),
-    address_apartment: Joi.string().max(50).optional().allow(null),
+    address_building: Joi.string().max(50).allow('', null).optional(),
+    address_apartment: Joi.string().max(50).allow('', null).optional(),
+
 });
 
 export const updateEmployeeSchema = Joi.object({
